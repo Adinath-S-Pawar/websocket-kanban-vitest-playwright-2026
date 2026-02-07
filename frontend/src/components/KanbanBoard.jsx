@@ -1,5 +1,6 @@
 import React, { useEffect, useState,useMemo } from "react";
 import { socket } from "../socket";
+import styles from "./KanbanBoard.module.css";
 
 const COLUMNS = [
   { key: "todo", title: "To Do" },
@@ -10,6 +11,11 @@ const COLUMNS = [
 function KanbanBoard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("low");
+  const [category, setCategory] = useState("Bug");
 
   // Group tasks by status.
   const TasksByStatus = useMemo(() => {
@@ -40,70 +46,96 @@ function KanbanBoard() {
     };
   }, []);
 
+  function HandleCreateTask(e) {
+    e.preventDefault();
+
+    if (!title.trim()) return;
+
+    socket.emit("task:create", {
+      title: title.trim(),
+      description: description.trim(),
+      priority,
+      category,
+      status: "todo",
+      attachments: [],
+    });
+
+    // Reset form
+    setTitle("");
+    setDescription("");
+    setPriority("low");
+    setCategory("Bug");
+  }
+
   if (loading) {
     return (
-      <div style={{ padding: "20px" }} >
-        <h2>Kanban Board</h2>
-        <p>Loading tasks from server...</p>
+      <div className={styles.kanbanContainer}>
+        <h2 className={styles.kanbanHeader}>Kanban Board</h2>
+        <p className={styles.loadingText}>Loading tasks from server...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Kanban Board</h2>
+    <div className={styles.kanbanContainer}>
+      <h2 className={styles.kanbanHeader}>Kanban Board</h2>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "16px",
-          marginTop: "20px",
-        }}
-      >
+      <form className="task-form" onSubmit={HandleCreateTask}>
+        <input
+          type="text"
+          placeholder="Task title (required)"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+
+        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+          <option value="low">Low Priority</option>
+          <option value="medium">Medium Priority</option>
+          <option value="high">High Priority</option>
+        </select>
+
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="Bug">Bug</option>
+          <option value="Feature">Feature</option>
+          <option value="Enhancement">Enhancement</option>
+        </select>
+
+        <textarea
+          placeholder="Task description (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
+        <button type="submit" disabled={!title.trim()}>
+          Add Task
+        </button>
+      </form>
+
+     <div className="board-grid">
         {COLUMNS.map((col) => (
-          <div
-            key={col.key}
-            style={{
-              background: "#f4f4f4",
-              borderRadius: "10px",
-              padding: "12px",
-              minHeight: "400px",
-            }}
-          >
-            <h3 style={{ marginBottom: "12px" }}>
+          <div className="column" key={col.key}>
+            <h3 className="column-title">
               {col.title} ({TasksByStatus[col.key].length})
             </h3>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div className="task-list">
               {TasksByStatus[col.key].map((task) => (
-                <div
-                  key={task.id}
-                  style={{
-                    background: "white",
-                    borderRadius: "8px",
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                  }}
-                >
-                  <h4 style={{ margin: 0 }}>{task.title}</h4>
+                <div className="task-card" key={task.id}>
+                  <h4 className="task-title">{task.title}</h4>
 
                   {task.description && (
-                    <p style={{ margin: "6px 0", fontSize: "14px" }}>
-                      {task.description}
-                    </p>
+                    <p className="task-desc">{task.description}</p>
                   )}
 
-                  <p style={{ margin: 0, fontSize: "13px", color: "#444" }}>
-                    <b>Priority:</b> {task.priority} | <b>Category:</b> {task.category}
+                  <p className="task-meta">
+                    <b>Priority:</b> {task.priority} | <b>Category:</b>{" "}
+                    {task.category}
                   </p>
                 </div>
               ))}
 
               {TasksByStatus[col.key].length === 0 && (
-                <p style={{ fontSize: "14px", color: "#666" }}>
-                  No tasks here.
-                </p>
+                <p className="empty-text">No tasks here.</p>
               )}
             </div>
           </div>

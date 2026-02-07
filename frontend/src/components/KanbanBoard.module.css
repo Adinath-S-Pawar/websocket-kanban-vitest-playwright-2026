@@ -1,0 +1,110 @@
+.kanban-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.kanban-header {
+  margin-bottom: 16px;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.task-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: #f4f4f4;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.task-form input,
+.task-form textarea,
+.task-form select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+}
+
+.task-form textarea {
+  grid-column: span 2;
+  min-height: 70px;
+  resize: vertical;
+}
+
+.task-form button {
+  grid-column: span 2;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: black;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.task-form button:disabled {
+  background: #777;
+  cursor: not-allowed;
+}
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.column {
+  background: #f4f4f4;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 420px;
+}
+
+.column-title {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-card {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.task-desc {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.task-meta {
+  margin: 0;
+  font-size: 13px;
+  color: #444;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: #666;
+}
