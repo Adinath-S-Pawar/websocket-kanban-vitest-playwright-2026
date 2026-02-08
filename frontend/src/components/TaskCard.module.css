@@ -146,3 +146,133 @@
   cursor: grabbing;
   transform: rotate(1deg);
 }
+
+.attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachmentsTitle {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.attachmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachmentItem {
+  font-size: 12px;
+}
+
+.attachmentImage {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.attachmentLink {
+  font-size: 12px;
+  color: #111;
+  text-decoration: underline;
+}
+
+.fileInput {
+  font-size: 12px;
+}
+
+.attachmentChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attachmentChip {
+  background: #f2f2f2;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.attachmentChip:hover {
+  background: #eaeaea;
+}
+
+.attachmentChipRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.removeAttachmentBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.previewOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+}
+
+.previewModal {
+  background: white;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.previewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.previewName {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.previewClose {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.previewImage {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.previewLink {
+  display: inline-block;
+  padding: 10px 14px;
+  background: #111;
+  color: white;
+  border-radius: 12px;
+  text-decoration: none;
+}

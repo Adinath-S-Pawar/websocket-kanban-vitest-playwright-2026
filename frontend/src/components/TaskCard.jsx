@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import styles from "./TaskCard.module.css";
 import { useDrag } from "react-dnd";
-
 
 export default function TaskCard({ task, socket }) {
     const [IsEditing, setIsEditing] = useState(false);
@@ -11,10 +10,23 @@ export default function TaskCard({ task, socket }) {
     const [Priority, setPriority] = useState(task.priority || "low");
     const [Category, setCategory] = useState(task.category || "general");
     const [Status, setStatus] = useState(task.status || "todo");
+    const [Attachments, setAttachments] = useState(task.attachments || []);
+    const [PreviewFile, setPreviewFile] = useState(null);
+
+    useEffect(() => {
+        setTitle(task.title);
+        setDescription(task.description || "");
+        setPriority(task.priority || "low");
+        setCategory(task.category || "general");
+        setStatus(task.status || "todo");
+        setAttachments(task.attachments || []);
+    }, [task]);
+
 
     const [{ IsDragging }, dragRef] = useDrag(() => ({
         type: "TASK",
         item: { id: task.id },
+        canDrag: !IsEditing,
         collect: (monitor) => ({
             IsDragging: monitor.isDragging(),
         }),
@@ -39,6 +51,8 @@ export default function TaskCard({ task, socket }) {
                 priority: Priority,
                 category: Category,
                 status: Status,
+                attachments: Attachments,
+
             },
         });
 
@@ -52,15 +66,43 @@ export default function TaskCard({ task, socket }) {
         setCategory(task.category || "general");
         setStatus(task.status || "todo");
         setIsEditing(false);
+        setAttachments(task.attachments || []);
+
     }
+
+    function HandleUploadFile(e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const FileUrl = URL.createObjectURL(file);
+
+        const NewAttachment = {
+            name: file.name,
+            type: file.type,
+            url: FileUrl,
+        };
+
+        const UpdatedAttachments = [...Attachments, NewAttachment];
+        setAttachments(UpdatedAttachments);
+
+        // Update backend (simulated storage)
+        socket.emit("task:update", {
+            id: task.id,
+            updates: { attachments: UpdatedAttachments, },
+        });
+
+        // Reset input so same file can be uploaded again
+        e.target.value = "";
+    }
+
 
     return (
         <div ref={dragRef}
-              className={`${styles.card} ${IsDragging ? styles.dragging : ""}`}
-             >
+            className={`${styles.card} ${IsDragging ? styles.dragging : ""}`}
+        >
 
             {!IsEditing ? (
-                <>
+                <>  {/*not editing */}
                     <div className={styles.header}>
                         <h4 className={styles.title}>{task.title}</h4>
 
@@ -79,6 +121,27 @@ export default function TaskCard({ task, socket }) {
                     <button className={styles.editBtn} onClick={() => setIsEditing(true)}>
                         Edit
                     </button>
+
+                    {Array.isArray(task.attachments) && task.attachments.length > 0 && (
+                        <div className={styles.attachments}>
+                            <p className={styles.attachmentsTitle}>Attachments</p>
+
+                            <div className={styles.attachmentChips}>
+                                {task.attachments.map((file, index) => (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        className={styles.attachmentChip}
+                                        onClick={() => setPreviewFile(file)}
+                                    >
+                                        {file.type?.startsWith("image/") ? "🖼" : "📎"} {file.name}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+
                 </>
             ) : (
                 <>
@@ -138,6 +201,15 @@ export default function TaskCard({ task, socket }) {
                         </select>
                     </div>
 
+                    <div className={styles.field}>
+                        <label className={styles.label}>Upload Attachment</label>
+                        <input
+                            type="file"
+                            className={styles.fileInput}
+                            onChange={HandleUploadFile}
+                        />
+                    </div>
+
 
                     <div className={styles.actions}>
                         <button className={styles.saveBtn} onClick={HandleSave}>
@@ -147,8 +219,82 @@ export default function TaskCard({ task, socket }) {
                             Cancel
                         </button>
                     </div>
+
+                    {Attachments.length > 0 && (
+                        <div className={styles.attachments}>
+                            <p className={styles.attachmentsTitle}>Selected Attachments</p>
+
+                            <div className={styles.attachmentChips}>
+                                {Attachments.map((file, index) => (
+                                    <div key={index} className={styles.attachmentChipRow}>
+                                        <button
+                                            type="button"
+                                            className={styles.attachmentChip}
+                                            onClick={() => setPreviewFile(file)}
+                                        >
+                                            {file.type?.startsWith("image/") ? "🖼" : "📎"} {file.name}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className={styles.removeAttachmentBtn}
+                                            onClick={() => {
+                                                const Updated = Attachments.filter((_, i) => i !== index);
+                                                setAttachments(Updated);
+
+                                                socket.emit("task:update", {
+                                                    id: task.id,
+                                                    updates: { attachments: Updated },
+                                                });
+                                            }}
+                                        >
+                                            ❌
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                 </>
             )}
+
+            {PreviewFile && (
+                <div className={styles.previewOverlay} onClick={() => setPreviewFile(null)}>
+                    <div
+                        className={styles.previewModal}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className={styles.previewHeader}>
+                            <p className={styles.previewName}>{PreviewFile.name}</p>
+                            <button
+                                className={styles.previewClose}
+                                onClick={() => setPreviewFile(null)}
+                            >
+                                ✖
+                            </button>
+                        </div>
+
+                        {PreviewFile.type?.startsWith("image/") ? (
+                            <img
+                                src={PreviewFile.url}
+                                alt={PreviewFile.name}
+                                className={styles.previewImage}
+                            />
+                        ) : (
+                            <a
+                                href={PreviewFile.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={styles.previewLink}
+                            >
+                                Open file
+                            </a>
+                        )}
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }
