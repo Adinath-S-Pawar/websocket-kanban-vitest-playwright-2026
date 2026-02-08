@@ -8,6 +8,7 @@ export default function Column({ column, tasks, socket }) {
     accept: "TASK",
     drop: (DraggedItem) => {
       if (!DraggedItem?.id) return;
+      if (DraggedItem?.isEditing) return;
 
       socket.emit("task:move", {
         id: DraggedItem.id,

@@ -25,7 +25,7 @@ export default function TaskCard({ task, socket }) {
 
     const [{ IsDragging }, dragRef] = useDrag(() => ({
         type: "TASK",
-        item: { id: task.id },
+        item: { id: task.id, isEditing: IsEditing },
         canDrag: !IsEditing,
         collect: (monitor) => ({
             IsDragging: monitor.isDragging(),
@@ -82,7 +82,7 @@ export default function TaskCard({ task, socket }) {
             url: FileUrl,
         };
 
-        const UpdatedAttachments = [...Attachments, NewAttachment];
+        const UpdatedAttachments = [NewAttachment];
         setAttachments(UpdatedAttachments);
 
         // Update backend (simulated storage)
