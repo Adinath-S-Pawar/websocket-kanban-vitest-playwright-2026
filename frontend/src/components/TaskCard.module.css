@@ -1,0 +1,148 @@
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.deleteBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #cc0000;
+}
+
+.description {
+  font-size: 13px;
+  color: #444;
+  margin: 0;
+}
+
+.meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 12px;
+  background: #f2f2f2;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.editBtn {
+  padding: 8px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #111;
+  color: white;
+  font-size: 13px;
+}
+
+.input {
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.textarea {
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  min-height: 70px;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.select {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.saveBtn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #0a7d00;
+  color: white;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #999;
+  color: white;
+  cursor: pointer;
+}
+
+.fieldRow {
+  display: flex;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.card {
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.dragging {
+  opacity: 0.55;
+  cursor: grabbing;
+  transform: rotate(1deg);
+}

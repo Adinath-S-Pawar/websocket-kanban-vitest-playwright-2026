@@ -1,0 +1,29 @@
+.column {
+  background: #f7f7f7;
+  border-radius: 14px;
+  padding: 14px;
+  min-height: 400px;
+  transition: 0.15s ease;
+}
+
+.columnHover {
+  background: #ececec;
+}
+
+.columnTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.columnHover {
+  background: #e8e8e8;
+  outline: 2px dashed #444;
+  outline-offset: -6px;
+}
