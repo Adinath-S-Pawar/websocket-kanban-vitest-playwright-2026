@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
 import Column from "./Column";
 import styles from "./KanbanBoard.module.css";
+import TaskProgressChart from "./TaskProgressChart";
 
 const socket = io("http://localhost:5000");
 
@@ -76,16 +77,20 @@ export default function KanbanBoard() {
       {IsLoading ? (
         <p className={styles.loading}>Loading tasks from server...</p>
       ) : (
-        <div className={styles.board}>
-          {COLUMNS.map((col) => (
-            <Column
-              key={col.key}
-              column={col}
-              tasks={TasksByStatus[col.key]}
-              socket={socket}
-            />
-          ))}
-        </div>
+        <>
+          <TaskProgressChart Tasks={Tasks} />
+          
+          <div className={styles.board}>
+            {COLUMNS.map((col) => (
+              <Column
+                key={col.key}
+                column={col}
+                tasks={TasksByStatus[col.key]}
+                socket={socket}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
