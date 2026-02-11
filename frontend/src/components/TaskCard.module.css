@@ -1,10 +1,7 @@
-/* Update frontend/src/components/TaskCard.module.css */
-
 .card {
   background: white;
   border-radius: 8px;
   padding: 16px;
-  /* Increased padding */
   box-shadow: 0 1px 2px rgba(9, 30, 66, 0.25);
   border: none;
   cursor: pointer;
@@ -14,7 +11,6 @@
   transition: box-shadow 0.2s, background 0.2s, transform 0.1s;
   position: relative;
   font-size: 15px;
-  /* Larger base font */
 }
 
 .card:hover {
@@ -23,17 +19,14 @@
   transform: translateY(-1px);
 }
 
-/* Update dragging opacity */
 .dragging {
-  opacity: 0.8; /* Made this more visible as requested */
+  opacity: 0.8; 
   transform: rotate(2deg);
   background: #e6f7ff;
 }
 
-/* Cover Image */
 .coverImage {
   width: calc(100% + 32px);
-  /* Span full width including padding */
   margin: -16px -16px 10px -16px;
   height: 140px;
   object-fit: cover;
@@ -41,7 +34,6 @@
   display: block;
 }
 
-/* Content */
 .header {
   display: flex;
   justify-content: space-between;
@@ -51,7 +43,6 @@
 
 .title {
   font-size: 16px;
-  /* Larger title */
   font-weight: 600;
   color: #172b4d;
   line-height: 1.4;
@@ -63,7 +54,6 @@
   display: flex;
   gap: 4px;
   opacity: 0;
-  /* Hide by default */
   transition: opacity 0.2s;
 }
 
@@ -99,14 +89,12 @@
   color: #5e6c84;
   display: -webkit-box;
   -webkit-line-clamp: 3;
-  /* Show a bit more */
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin: 0;
 }
 
-/* Badges */
 .meta {
   display: flex;
   gap: 8px;
@@ -117,7 +105,7 @@
 .badge {
   font-size: 12px;
   padding: 4px 8px;
-  /* Larger chips */
+
   border-radius: 4px;
   font-weight: 600;
   text-transform: capitalize;
@@ -143,7 +131,6 @@
   color: #403294;
 }
 
-/* Attachment Chips */
 .attachments {
   margin-top: 8px;
   border-top: 1px solid #ebecf0;
@@ -181,7 +168,6 @@
   background: #ebecf0;
 }
 
-/* Attachment Summary Chip */
 .attachmentSummaryChip {
   display: inline-flex;
   align-items: center;
@@ -199,7 +185,6 @@
   background: #ebecf0;
 }
 
-/* Edit Mode Styling */
 .input,
 .textarea,
 .select {
@@ -274,15 +259,14 @@
   border-radius: 4px;
 }
 
-/* Preview Modal Styles */
 .previewOverlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(9, 30, 66, 0.85); /* Slightly darker */
+  background: rgba(9, 30, 66, 0.85); 
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 11000; /* Higher than modalOverlay (10000) */
+  z-index: 11000; 
   backdrop-filter: blur(2px);
 }
 
@@ -324,7 +308,6 @@
   border-radius: 4px;
 }
 
-/* --- MODAL / POPUP STYLES --- */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -386,7 +369,6 @@
   gap: 8px;
 }
 
-/* Styles for Attachment List inside Edit Modal */
 .editAttachmentList {
   list-style: none;
   padding: 0;
@@ -414,7 +396,6 @@
   cursor: pointer;
 }
 
-/* Upload Area */
 .uploadArea {
   margin-top: 8px;
   display: flex;
@@ -436,7 +417,6 @@
   gap: 10px;
 }
 
-/* Popup specific styles (smaller modal) */
 .popupContent {
   background: white;
   width: 320px;

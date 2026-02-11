@@ -3,12 +3,10 @@ import ReactDOM from "react-dom";
 import styles from "./TaskCard.module.css";
 import { useDrag } from "react-dnd";
 
-// --- Helper: Portal for Modals ---
 const Portal = ({ children }) => {
     return ReactDOM.createPortal(children, document.body);
 };
 
-// --- Helper: Edit Modal Component ---
 function TaskEditModal({ 
     Title, setTitle, 
     Description, setDescription, 
@@ -16,11 +14,11 @@ function TaskEditModal({
     Category, setCategory, 
     Status, setStatus, 
     Attachments, setAttachments,
-    NewAttachments, setNewAttachments, // Changed from SelectedFile
+    NewAttachments, setNewAttachments, 
     HandleSave, HandleCancel,
     HandleFileChange 
 }) {
-    // Helper to remove a pending upload
+
     const removePendingUpload = (index) => {
         setNewAttachments(prev => prev.filter((_, i) => i !== index));
     };
@@ -57,7 +55,6 @@ function TaskEditModal({
                             />
                         </div>
 
-                        {/* Selects Row */}
                         <div className={styles.fieldRow}>
                             <div className={styles.field}>
                                 <label className={styles.label}>Priority</label>
@@ -153,7 +150,7 @@ function TaskEditModal({
                                     type="file"
                                     className={styles.fileInput}
                                     onChange={HandleFileChange}
-                                    multiple // Helper: allow selecting multiple in system dialog too (optional)
+                                    multiple 
                                 />
                             </div>
                         </div>
@@ -169,12 +166,9 @@ function TaskEditModal({
     );
 }
 
-
-// --- Main Card Component ---
 export default function TaskCard({ task, socket }) {
     const [IsEditing, setIsEditing] = useState(false);
     
-    // State for Edit Form
     const [Title, setTitle] = useState(task.title);
     const [Description, setDescription] = useState(task.description || "");
     const [Priority, setPriority] = useState(task.priority || "low");
@@ -182,14 +176,11 @@ export default function TaskCard({ task, socket }) {
     const [Status, setStatus] = useState(task.status || "todo");
     const [Attachments, setAttachments] = useState(task.attachments || []);
     
-    // State for temporary file selection (Array now)
     const [NewAttachments, setNewAttachments] = useState([]);
 
-    // State for Previews
     const [PreviewFile, setPreviewFile] = useState(null);
     const [ShowAttachmentPopup, setShowAttachmentPopup] = useState(false);
 
-    // Sync task prop to state
     useEffect(() => {
         if (!IsEditing) {
             setTitle(task.title);
@@ -200,7 +191,6 @@ export default function TaskCard({ task, socket }) {
             setAttachments(task.attachments || []);
         }
     }, [task, IsEditing]);
-
 
     const [{ IsDragging }, dragRef] = useDrag(() => ({
         type: "TASK",
@@ -224,7 +214,7 @@ export default function TaskCard({ task, socket }) {
 
     function HandleEditOpen() {
         setIsEditing(true);
-        // Reset local form state
+
         setTitle(task.title);
         setDescription(task.description);
         setPriority(task.priority);
@@ -232,7 +222,6 @@ export default function TaskCard({ task, socket }) {
         setStatus(task.status || "todo");
         setAttachments(task.attachments || []);
         
-        // Clear pending files
         setNewAttachments([]);
     }
 
@@ -245,17 +234,14 @@ export default function TaskCard({ task, socket }) {
         const files = Array.from(e.target.files || []);
         if (files.length === 0) return;
         
-        // Append new files to existing pending files
         setNewAttachments(prev => [...prev, ...files]);
         
-        // Reset input so same file can be selected again if needed (visual cleanup)
         e.target.value = "";
     }
 
     function HandleSave() {
         let FinalAttachments = [...Attachments];
 
-        // Process all new files
         if (NewAttachments.length > 0) {
             const processedFiles = NewAttachments.map(file => ({
                 name: file.name,
@@ -314,8 +300,6 @@ export default function TaskCard({ task, socket }) {
                     </div>
                 )}
             </div>
-
-            {/* --- Modals --- */}
             
             {/* 1. Edit Modal */}
             {IsEditing && (
@@ -347,14 +331,14 @@ export default function TaskCard({ task, socket }) {
                                         key={i} 
                                         className={styles.popupItem}
                                         onClick={() => {
-                                            // Handle Preview Logic
+                                           
                                             if (file.type?.startsWith("image/")) {
                                                 setPreviewFile(file);
-                                                setShowAttachmentPopup(false); // Close list when opening preview
+                                                setShowAttachmentPopup(false); 
                                             } else {
                                                 window.open(file.url, "_blank");
-                                                setShowAttachmentPopup(false); // Close list after opening tab
-                                                // Do NOT setPreviewFile(file) here to avoid the "cannot preview" modal
+                                                setShowAttachmentPopup(false);
+                                                
                                             }
                                         }}
                                     >

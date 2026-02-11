@@ -1,18 +1,15 @@
-/* Update frontend/src/components/KanbanBoard.module.css */
-
+/* Vertical Scrolling */
 .kanbanContainer {
-  /* Full screen layout */
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #f0f2f5;
-  /* Modern gray background */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow: hidden;
-  /* Prevent body scroll */
+  overflow-y: auto;
+  /* Allow vertical scroll */
+  overflow-x: hidden;
 }
 
-/* Header area */
 .kanbanHeader {
   padding: 12px 24px;
   background: white;
@@ -37,7 +34,7 @@
 }
 
 .statsBtn {
-  padding: 6px 12px;
+  padding: 10px 16px;
   background: #e9ebee;
   border: none;
   border-radius: 4px;
@@ -51,7 +48,6 @@
   background: #dfe1e6;
 }
 
-/* Controls (Add Task) */
 .controls {
   padding: 16px 24px 0 24px;
   flex-shrink: 0;
@@ -61,6 +57,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  padding-bottom: 12px;
 }
 
 .input {
@@ -92,23 +89,40 @@
   background: #005a8e;
 }
 
-.chartContainer {
-  padding: 20px 24px 0 24px;
-  background: #f0f2f5;
-  flex-shrink: 0;
+.contentArea {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px 24px;
+  gap: 20px;
+  overflow: visible;
+  /* Let content expand */
 }
 
-/* Board Layout */
+.chartPanel {
+  flex-shrink: 0;
+  height: 320px;
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.boardPanel {
+  flex-grow: 1;
+  overflow-x: auto;
+  /* Keep horizontal scroll for board */
+  border-radius: 8px;
+  min-height: 600px;
+  /* Ensure board has Minimum height */
+}
+
 .board {
   display: flex;
   gap: 20px;
-  padding: 24px;
-  overflow-x: auto;
-  /* Horizontal scroll if many columns */
   height: 100%;
   align-items: flex-start;
-  /* Columns start at top */
-  flex-grow: 1;
 }
 
 .loading {

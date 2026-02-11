@@ -87,22 +87,25 @@ export default function KanbanBoard() {
         </form>
       </div>
 
-      {/* Removed blocking loading state to show columns immediately */}
-      {ShowChart && (
-        <div className={styles.chartContainer}>
-          <TaskProgressChart Tasks={Tasks} />
-        </div>
-      )}
+      <div className={styles.contentArea}>
+        {ShowChart && (
+          <div className={styles.chartPanel}>
+            <TaskProgressChart Tasks={Tasks} />
+          </div>
+        )}
 
-      <div className={styles.board}>
-        {COLUMNS.map((col) => (
-          <Column
-            key={col.key}
-            column={col}
-            tasks={TasksByStatus[col.key]}
-            socket={socket}
-          />
-        ))}
+        <div className={styles.boardPanel}>
+          <div className={styles.board}>
+            {COLUMNS.map((col) => (
+              <Column
+                key={col.key}
+                column={col}
+                tasks={TasksByStatus[col.key]}
+                socket={socket}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

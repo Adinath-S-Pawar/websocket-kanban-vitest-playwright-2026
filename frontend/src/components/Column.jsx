@@ -21,7 +21,7 @@ export default function Column({ column, tasks, socket }) {
   }), [column.key, socket]);
 
   return (
-    // inside Column.jsx return
+    
     <div ref={dropRef} className={`${styles.column} ${IsOver ? styles.columnHover : ""}`}>
       <div className={styles.columnHeader}>
         <h3 className={styles.columnTitle}>{column.title}</h3>
