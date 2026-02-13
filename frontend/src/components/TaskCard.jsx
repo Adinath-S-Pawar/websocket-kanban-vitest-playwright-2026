@@ -7,16 +7,16 @@ const Portal = ({ children }) => {
     return ReactDOM.createPortal(children, document.body);
 };
 
-function TaskEditModal({ 
-    Title, setTitle, 
-    Description, setDescription, 
-    Priority, setPriority, 
-    Category, setCategory, 
-    Status, setStatus, 
+function TaskEditModal({
+    Title, setTitle,
+    Description, setDescription,
+    Priority, setPriority,
+    Category, setCategory,
+    Status, setStatus,
     Attachments, setAttachments,
-    NewAttachments, setNewAttachments, 
+    NewAttachments, setNewAttachments,
     HandleSave, HandleCancel,
-    HandleFileChange 
+    HandleFileChange
 }) {
 
     const removePendingUpload = (index) => {
@@ -59,6 +59,7 @@ function TaskEditModal({
                             <div className={styles.field}>
                                 <label className={styles.label}>Priority</label>
                                 <select
+                                    name="priority"
                                     className={styles.select}
                                     value={Priority}
                                     onChange={(e) => setPriority(e.target.value)}
@@ -72,6 +73,7 @@ function TaskEditModal({
                             <div className={styles.field}>
                                 <label className={styles.label}>Category</label>
                                 <select
+                                    name="category"
                                     className={styles.select}
                                     value={Category}
                                     onChange={(e) => setCategory(e.target.value)}
@@ -86,6 +88,7 @@ function TaskEditModal({
                         <div className={styles.field}>
                             <label className={styles.label}>Status</label>
                             <select
+                                name="status"
                                 className={styles.select}
                                 value={Status}
                                 onChange={(e) => setStatus(e.target.value)}
@@ -99,7 +102,7 @@ function TaskEditModal({
                         {/* Attachments Section */}
                         <div className={styles.field}>
                             <label className={styles.label}>Attachments</label>
-                            
+
                             {/* Existing File List */}
                             {Attachments.length > 0 && (
                                 <ul className={styles.editAttachmentList}>
@@ -148,9 +151,10 @@ function TaskEditModal({
                             <div className={styles.uploadArea}>
                                 <input
                                     type="file"
+                                    data-testid="file-input"
                                     className={styles.fileInput}
                                     onChange={HandleFileChange}
-                                    multiple 
+                                    multiple
                                 />
                             </div>
                         </div>
@@ -168,14 +172,14 @@ function TaskEditModal({
 
 export default function TaskCard({ task, socket }) {
     const [IsEditing, setIsEditing] = useState(false);
-    
+
     const [Title, setTitle] = useState(task.title);
     const [Description, setDescription] = useState(task.description || "");
     const [Priority, setPriority] = useState(task.priority || "low");
     const [Category, setCategory] = useState(task.category || "general");
     const [Status, setStatus] = useState(task.status || "todo");
     const [Attachments, setAttachments] = useState(task.attachments || []);
-    
+
     const [NewAttachments, setNewAttachments] = useState([]);
 
     const [PreviewFile, setPreviewFile] = useState(null);
@@ -195,10 +199,21 @@ export default function TaskCard({ task, socket }) {
     const [{ IsDragging }, dragRef] = useDrag(() => ({
         type: "TASK",
         item: { id: task.id },
+        canDrag: !IsEditing,
         collect: (monitor) => ({
             IsDragging: monitor.isDragging(),
         }),
-    }), [task.id]);
+    }), [task.id,IsEditing]);
+
+    useEffect(() => {
+        if (IsDragging) {
+            document.body.classList.add('dragging-active');
+        } else {
+            document.body.classList.remove('dragging-active');
+        }
+        return () => document.body.classList.remove('dragging-active');
+    }, [IsDragging]);
+
 
     const PriorityClass = useMemo(() => {
         switch (task.priority) {
@@ -216,12 +231,12 @@ export default function TaskCard({ task, socket }) {
         setIsEditing(true);
 
         setTitle(task.title);
-        setDescription(task.description);
-        setPriority(task.priority);
-        setCategory(task.category);
+        setDescription(task.description || "");
+        setPriority(task.priority || "low");
+        setCategory(task.category || "general");
         setStatus(task.status || "todo");
         setAttachments(task.attachments || []);
-        
+
         setNewAttachments([]);
     }
 
@@ -233,9 +248,9 @@ export default function TaskCard({ task, socket }) {
     function HandleFileChange(e) {
         const files = Array.from(e.target.files || []);
         if (files.length === 0) return;
-        
+
         setNewAttachments(prev => [...prev, ...files]);
-        
+
         e.target.value = "";
     }
 
@@ -270,8 +285,9 @@ export default function TaskCard({ task, socket }) {
     return (
         <>
             <div ref={dragRef}
-                className={`${styles.card} ${IsDragging ? styles.dragging : ""}`}
-                onClick={HandleEditOpen}
+                data-testid={`task-${task.id}`}
+                className={`${styles.card} ${IsDragging ? styles.dragging : ""} ${IsEditing && !IsDragging ? styles.disabledDrag : ""}`}
+                onDoubleClick={HandleEditOpen}
             >
                 <div className={styles.header}>
                     <h4 className={styles.title}>{task.title}</h4>
@@ -284,14 +300,14 @@ export default function TaskCard({ task, socket }) {
                 <p className={styles.description}>{task.description || "—"}</p>
 
                 <div className={styles.meta}>
-                    <span className={`${styles.badge} ${PriorityClass}`}>{task.priority}</span>
+                    <span data-testid="priority-badge" className={`${styles.badge} ${PriorityClass}`}>{task.priority}</span>
                     <span className={`${styles.badge} ${styles.badgeCategory}`}>{task.category}</span>
                 </div>
 
                 {/* Attachments Summary Chip */}
                 {Array.isArray(task.attachments) && task.attachments.length > 0 && (
                     <div className={styles.attachments}>
-                        <div 
+                        <div
                             className={styles.attachmentSummaryChip}
                             onClick={(e) => { e.stopPropagation(); setShowAttachmentPopup(true); }}
                         >
@@ -300,10 +316,10 @@ export default function TaskCard({ task, socket }) {
                     </div>
                 )}
             </div>
-            
+
             {/* 1. Edit Modal */}
             {IsEditing && (
-                <TaskEditModal 
+                <TaskEditModal
                     Title={Title} setTitle={setTitle}
                     Description={Description} setDescription={setDescription}
                     Priority={Priority} setPriority={setPriority}
@@ -319,26 +335,26 @@ export default function TaskCard({ task, socket }) {
             {/* 2. Attachment List Popup */}
             {ShowAttachmentPopup && (
                 <Portal>
-                     <div className={styles.modalOverlay} onClick={() => setShowAttachmentPopup(false)}>
+                    <div className={styles.modalOverlay} onClick={() => setShowAttachmentPopup(false)}>
                         <div className={styles.popupContent} onClick={e => e.stopPropagation()}>
                             <div className={styles.modalHeader}>
                                 <h4>Attachments</h4>
                                 <button className={styles.closeHeaderBtn} onClick={() => setShowAttachmentPopup(false)}>✖</button>
                             </div>
-                             <div className={styles.popupList}>
+                            <div className={styles.popupList}>
                                 {task.attachments.map((file, i) => (
-                                    <div 
-                                        key={i} 
+                                    <div
+                                        key={i}
                                         className={styles.popupItem}
                                         onClick={() => {
-                                           
+
                                             if (file.type?.startsWith("image/")) {
                                                 setPreviewFile(file);
-                                                setShowAttachmentPopup(false); 
+                                                setShowAttachmentPopup(false);
                                             } else {
                                                 window.open(file.url, "_blank");
                                                 setShowAttachmentPopup(false);
-                                                
+
                                             }
                                         }}
                                     >

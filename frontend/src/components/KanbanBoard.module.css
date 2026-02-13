@@ -1,18 +1,15 @@
-/* Vertical Scrolling */
 .kanbanContainer {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f0f2f5;
+  background-color: #42526ecf;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow-y: auto;
-  /* Allow vertical scroll */
-  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .kanbanHeader {
   padding: 12px 24px;
-  background: white;
+  background: #f4f5f7;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
@@ -96,7 +93,6 @@
   padding: 0 24px 24px 24px;
   gap: 20px;
   overflow: visible;
-  /* Let content expand */
 }
 
 .chartPanel {
@@ -112,10 +108,9 @@
 .boardPanel {
   flex-grow: 1;
   overflow-x: auto;
-  /* Keep horizontal scroll for board */
+  overflow-y: visible;
   border-radius: 8px;
   min-height: 600px;
-  /* Ensure board has Minimum height */
 }
 
 .board {

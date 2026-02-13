@@ -4,7 +4,9 @@ import Column from "./Column";
 import styles from "./KanbanBoard.module.css";
 import TaskProgressChart from "./TaskProgressChart";
 
-const socket = io("http://localhost:5000");
+export default function KanbanBoard({ socket: externalSocket }) {
+  const socket = externalSocket || io("http://localhost:5000");
+}
 
 const COLUMNS = [
   { key: "todo", title: "To Do" },
@@ -97,12 +99,13 @@ export default function KanbanBoard() {
         <div className={styles.boardPanel}>
           <div className={styles.board}>
             {COLUMNS.map((col) => (
-              <Column
-                key={col.key}
-                column={col}
-                tasks={TasksByStatus[col.key]}
-                socket={socket}
-              />
+              <div key={col.key} data-testid={`column-${col.key}`}>
+                <Column
+                  column={col}
+                  tasks={TasksByStatus[col.key]}
+                  socket={socket}
+                />
+              </div>
             ))}
           </div>
         </div>
